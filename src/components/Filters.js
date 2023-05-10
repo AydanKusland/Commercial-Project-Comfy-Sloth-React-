@@ -20,6 +20,11 @@ const Filters = () => {
 		clearFilters,
 		all_products
 	} = useFilterContext()
+
+	const categories = getUniqueValues(all_products, 'category')
+	const companies = getUniqueValues(all_products, 'company')
+	const colors = getUniqueValues(all_products, 'colors')
+
 	return (
 		<Wrapper>
 			<div className='content'>
@@ -41,7 +46,112 @@ const Filters = () => {
 						/>
 					</div>
 					{/* end of search input */}
+					{/* categories */}
+					<div className='form-control'>
+						<h5>category</h5>
+						<div>
+							{categories.map((c, index) => {
+								return (
+									<button
+										key={index}
+										className={`${category === c.toLowerCase() && 'active'}`}
+										onClick={updateFilters}
+										name='category'
+										type='button'
+									>
+										{c}
+									</button>
+								)
+							})}
+						</div>
+					</div>
+					{/* end of categories */}
+
+					{/* companies */}
+					<div className='form-control'>
+						<h5>company</h5>
+						<select
+							name='company'
+							value={company}
+							onChange={updateFilters}
+							className='company'
+						>
+							{companies.map((c, i) => {
+								return (
+									<option key={i} value={c}>
+										{c}
+									</option>
+								)
+							})}
+						</select>
+					</div>
+					{/* colors */}
+					<div className='form-control'>
+						<h5>colors</h5>
+						<div className='colors'>
+							{colors.map((c, i) => {
+								if (c === 'all')
+									return (
+										<button
+											key={i}
+											name='color'
+											data-color='all'
+											onClick={updateFilters}
+											className={`${
+												color === 'all' ? 'all-btn active' : 'all-btn'
+											}`}
+										>
+											All
+										</button>
+									)
+								return (
+									<button
+										key={i}
+										name='color'
+										data-color={c}
+										style={{ background: c }}
+										onClick={updateFilters}
+										className={`${
+											color === c ? 'color-btn active' : 'color-btn'
+										}`}
+									>
+										{color === c && <FaCheck />}
+									</button>
+								)
+							})}
+						</div>
+					</div>
+					{/* end of colors */}
+					{/* price */}
+					<div className='form-control'>
+						<h5>price</h5>
+						<p className='price'>{formatPrice(price)}</p>
+						<input
+							type='range'
+							name='price'
+							onChange={updateFilters}
+							min={min_price}
+							max={max_price}
+							value={price}
+						></input>
+					</div>
+					{/* end of price */}
+					{/* shipping */}
+					<div className='form-control shipping'>
+						<label htmlFor='shipping'>free shipping</label>
+						<input
+							type='checkbox'
+							name='shipping'
+							id='shipping'
+							onChange={updateFilters}
+							checked={shipping}
+						/>
+					</div>
+					{/* end of shipping */}
 				</form>
+				<button type='button' className='clear-btn' onClick={clearFilters}>
+					clear filters
+				</button>
 			</div>
 		</Wrapper>
 	)
@@ -132,6 +242,12 @@ const Wrapper = styled.section`
 		column-gap: 0.5rem;
 		font-size: 1rem;
 		max-width: 200px;
+	}
+	.shipping label {
+		margin-bottom: 0.3rem;
+	}
+	.shipping input {
+		justify-self: start;
 	}
 	.clear-btn {
 		background: var(--clr-red-dark);
